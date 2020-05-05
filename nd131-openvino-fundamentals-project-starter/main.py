@@ -26,6 +26,7 @@ import time
 import socket
 import json
 import cv2
+import random
 import numpy as np
 
 import logging as log
@@ -134,7 +135,7 @@ def infer_on_stream(args, mqtt_client):
     # Create a video writer for the output video
     # The second argument should be `cv2.VideoWriter_fourcc('M','J','P','G')`
     # on Mac, and `0x00000021` on Linux
-    out = cv2.VideoWriter('out.mp4', cv2.VideoWriter_fourcc('H','2','6','4'), 30, (width,height))
+    # out = cv2.VideoWriter('out.mp4', cv2.VideoWriter_fourcc('H','2','6','4'), 30, (width,height))
 
     ### TODO: Loop until stream is over ###
     while cap.isOpened():
@@ -160,13 +161,7 @@ def infer_on_stream(args, mqtt_client):
             result = infer_network.get_output()
             frame = draw_boxes(frame, result, args, width, height)
             # Write out the frame
-            out.write(frame)
-            # out_frame, classes = draw_masks(result, width, height)
-            
-            # print(classes)
-            # sys.stdout.buffer.write(out_frame)  
-            # sys.stdout.flush()
-            # print(result)
+            # out.write(frame)
 
             ### TODO: Extract any desired stats from the results ###
 
@@ -174,14 +169,14 @@ def infer_on_stream(args, mqtt_client):
             ### current_count, total_count and duration to the MQTT server ###
             ### Topic "person": keys of "count" and "total" ###
             ### Topic "person/duration": key of "duration" ###
-            person = json.dumps({'count':1, 'total': 1})
+            person = json.dumps({'count':random.randint(1, 10), 'total': random.randint(1, 10)})
             person_duration = json.dumps({'duration':"1"})
             mqtt_client.publish("person", payload=person, qos=0, retain=False)
             mqtt_client.publish("person/duration", payload=person_duration, qos=0, retain=False)
 
         ### TODO: Send the frame to the FFMPEG server ###
-        # sys.stdout.buffer.write(out_frame)  
-        # sys.stdout.flush()
+        sys.stdout.buffer.write(frame)  
+        sys.stdout.flush()
 
         ### TODO: Write an output image if `single_image_mode` ###
 
