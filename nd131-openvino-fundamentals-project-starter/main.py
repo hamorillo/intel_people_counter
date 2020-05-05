@@ -70,10 +70,11 @@ def build_argparser():
 
 
 def connect_mqtt():
-    ### TODO: Connect to the MQTT client ###
-    client = None
+    ### TODO: Connect to the MQTT client ###    
+    mqttc = mqtt.Client()
+    mqttc.connect(MQTT_HOST, MQTT_PORT, MQTT_KEEPALIVE_INTERVAL)
 
-    return client
+    return mqttc
 
 def draw_masks(result, width, height):
     '''
@@ -97,9 +98,7 @@ def draw_boxes(frame, result, args, width, height):
     '''
     for box in result[0][0]: # Output shape is 1x1x100x7
         conf = box[2]
- #       print("a")
-#        print(box)
-        if conf >= args.prob_threshold:
+        if box[1] == 1 and conf >= args.prob_threshold:
             xmin = int(box[3] * width)
             ymin = int(box[4] * height)
             xmax = int(box[5] * width)
@@ -107,7 +106,7 @@ def draw_boxes(frame, result, args, width, height):
             cv2.rectangle(frame, (xmin, ymin), (xmax, ymax), (0,0,255), 1)
     return frame
 
-def infer_on_stream(args, client):
+def infer_on_stream(args, mqtt_client):
     """
     Initialize the inference network, stream video to network,
     and output stats and video.
@@ -175,6 +174,10 @@ def infer_on_stream(args, client):
             ### current_count, total_count and duration to the MQTT server ###
             ### Topic "person": keys of "count" and "total" ###
             ### Topic "person/duration": key of "duration" ###
+            person = json.dumps({'count':1, 'total': 1})
+            person_duration = json.dumps({'duration':"1"})
+            mqtt_client.publish("person", payload=person, qos=0, retain=False)
+            mqtt_client.publish("person/duration", payload=person_duration, qos=0, retain=False)
 
         ### TODO: Send the frame to the FFMPEG server ###
         # sys.stdout.buffer.write(out_frame)  
@@ -192,9 +195,9 @@ def main():
     # Grab command line args
     args = build_argparser().parse_args()
     # Connect to the MQTT server
-    client = connect_mqtt()
+    mqtt_client = connect_mqtt()
     # Perform inference on the input stream
-    infer_on_stream(args, client)
+    infer_on_stream(args, mqtt_client)
 
 
 if __name__ == '__main__':
