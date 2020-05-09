@@ -20,6 +20,7 @@
 """
 
 
+# MQTT server environment variables
 import os
 import sys
 import time
@@ -28,14 +29,10 @@ import json
 import cv2
 import random
 import numpy as np
-
 import logging as log
 import paho.mqtt.client as mqtt
-
 from argparse import ArgumentParser
 from inference import Network
-
-# MQTT server environment variables
 HOSTNAME = socket.gethostname()
 IPADDRESS = socket.gethostbyname(HOSTNAME)
 MQTT_HOST = IPADDRESS
@@ -71,41 +68,29 @@ def build_argparser():
 
 
 def connect_mqtt():
-    ### TODO: Connect to the MQTT client ###    
+    ### TODO: Connect to the MQTT client ###
     mqttc = mqtt.Client()
     mqttc.connect(MQTT_HOST, MQTT_PORT, MQTT_KEEPALIVE_INTERVAL)
 
     return mqttc
 
-def draw_masks(result, width, height):
-    '''
-    Draw semantic mask classes onto the frame.
-    '''
-    # Create a mask with color by class
-    classes = cv2.resize(result[0].transpose((1,2,0)), (width,height), 
-        interpolation=cv2.INTER_NEAREST)
-    unique_classes = np.unique(classes)
-    out_mask = classes * (255/20)
-    
-    # Stack the mask so FFmpeg understands it
-    out_mask = np.dstack((out_mask, out_mask, out_mask))
-    out_mask = np.uint8(out_mask)
-
-    return out_mask, unique_classes
 
 def draw_boxes(frame, result, args, width, height):
     '''
     Draw bounding boxes onto the frame.
     '''
-    for box in result[0][0]: # Output shape is 1x1x100x7
-        conf = box[2]
+    people_in_frame = 0
+    for box in result[0][0]:  # Output shape is 1x1x100x7
+        conf = box[2]        
         if box[1] == 1 and conf >= args.prob_threshold:
+            people_in_frame += 1
             xmin = int(box[3] * width)
             ymin = int(box[4] * height)
             xmax = int(box[5] * width)
             ymax = int(box[6] * height)
-            cv2.rectangle(frame, (xmin, ymin), (xmax, ymax), (0,0,255), 1)
-    return frame
+            cv2.rectangle(frame, (xmin, ymin), (xmax, ymax), (0, 0, 255), 1)
+    return frame, people_in_frame
+
 
 def infer_on_stream(args, mqtt_client):
     """
@@ -121,14 +106,14 @@ def infer_on_stream(args, mqtt_client):
     # Set Probability threshold for detections
     prob_threshold = args.prob_threshold
 
-    ### TODO: Load the model through `infer_network` ###    
+    ### TODO: Load the model through `infer_network` ###
     infer_network.load_model(args.model, args.device, args.cpu_extension)
 
     ### TODO: Handle the input stream ###
     cap = cv2.VideoCapture(args.input)
-    cap.open(args.input)    
+    cap.open(args.input)
 
-    # Grab the shape of the input 
+    # Grab the shape of the input
     width = int(cap.get(3))
     height = int(cap.get(4))
 
@@ -145,21 +130,22 @@ def infer_on_stream(args, mqtt_client):
             break
 
         ### TODO: Pre-process the image as needed ###
-        net_input_shape = infer_network.get_input_shape()        
+        net_input_shape = infer_network.get_input_shape()
 
         p_frame = cv2.resize(frame, (net_input_shape[3], net_input_shape[2]))
-        p_frame = p_frame.transpose((2,0,1))
-        p_frame = p_frame.reshape(1, *p_frame.shape)        
+        p_frame = p_frame.transpose((2, 0, 1))
+        p_frame = p_frame.reshape(1, *p_frame.shape)
 
         ### TODO: Start asynchronous inference for specified request ###
         infer_network.exec_net(p_frame)
 
         ### TODO: Wait for the result ###
-        if (infer_network.wait() == 0):    
+        if (infer_network.wait() == 0):
             ### TODO: Get the results of the inference request ###
             # Output Shape -> [1, 1, 100, 7] #
             result = infer_network.get_output()
-            frame = draw_boxes(frame, result, args, width, height)
+            frame, people_in_frame = draw_boxes(
+                frame, result, args, width, height)
             # Write out the frame
             # out.write(frame)
 
@@ -169,13 +155,15 @@ def infer_on_stream(args, mqtt_client):
             ### current_count, total_count and duration to the MQTT server ###
             ### Topic "person": keys of "count" and "total" ###
             ### Topic "person/duration": key of "duration" ###
-            person = json.dumps({'count':random.randint(1, 10), 'total': random.randint(1, 10)})
-            person_duration = json.dumps({'duration':"1"})
+            person = json.dumps(
+                {'count': people_in_frame, 'total': random.randint(1, 10)})
+            person_duration = json.dumps({'duration': "1"})
             mqtt_client.publish("person", payload=person, qos=0, retain=False)
-            mqtt_client.publish("person/duration", payload=person_duration, qos=0, retain=False)
+            mqtt_client.publish("person/duration",
+                                payload=person_duration, qos=0, retain=False)
 
         ### TODO: Send the frame to the FFMPEG server ###
-        sys.stdout.buffer.write(frame)  
+        sys.stdout.buffer.write(frame)
         sys.stdout.flush()
 
         ### TODO: Write an output image if `single_image_mode` ###
