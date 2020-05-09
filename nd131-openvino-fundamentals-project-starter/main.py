@@ -81,7 +81,7 @@ def draw_boxes(frame, result, args, width, height):
     '''
     people_in_frame = 0
     for box in result[0][0]:  # Output shape is 1x1x100x7
-        conf = box[2]        
+        conf = box[2]
         if box[1] == 1 and conf >= args.prob_threshold:
             people_in_frame += 1
             xmin = int(box[3] * width)
@@ -122,6 +122,10 @@ def infer_on_stream(args, mqtt_client):
     # on Mac, and `0x00000021` on Linux
     # out = cv2.VideoWriter('out.mp4', cv2.VideoWriter_fourcc('H','2','6','4'), 30, (width,height))
 
+    total_people_count = 0
+    frames_without_people = 5
+    input_time = None
+
     ### TODO: Loop until stream is over ###
     while cap.isOpened():
         ### TODO: Read from the video capture ###
@@ -144,23 +148,33 @@ def infer_on_stream(args, mqtt_client):
             ### TODO: Get the results of the inference request ###
             # Output Shape -> [1, 1, 100, 7] #
             result = infer_network.get_output()
+
+            ### TODO: Extract any desired stats from the results ###
             frame, people_in_frame = draw_boxes(
                 frame, result, args, width, height)
             # Write out the frame
             # out.write(frame)
 
-            ### TODO: Extract any desired stats from the results ###
-
             ### TODO: Calculate and send relevant information on ###
             ### current_count, total_count and duration to the MQTT server ###
             ### Topic "person": keys of "count" and "total" ###
             ### Topic "person/duration": key of "duration" ###
+            if(people_in_frame >= 1 and frames_without_people > 30):
+                total_people_count += 1
+                frames_without_people = 0
+                input_time = time.time()
+            elif (people_in_frame == 0 and frames_without_people == 30 and input_time != None):
+                person_duration = json.dumps({'duration': time.time()-input_time })
+                mqtt_client.publish("person/duration",
+                                    payload=person_duration, qos=0, retain=False)
+                frames_without_people += 1
+            elif people_in_frame == 0:
+                frames_without_people += 1
+
             person = json.dumps(
-                {'count': people_in_frame, 'total': random.randint(1, 10)})
-            person_duration = json.dumps({'duration': "1"})
+                {'count': people_in_frame, 'total': total_people_count})
+
             mqtt_client.publish("person", payload=person, qos=0, retain=False)
-            mqtt_client.publish("person/duration",
-                                payload=person_duration, qos=0, retain=False)
 
         ### TODO: Send the frame to the FFMPEG server ###
         sys.stdout.buffer.write(frame)
