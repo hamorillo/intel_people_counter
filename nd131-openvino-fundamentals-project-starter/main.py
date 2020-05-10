@@ -33,11 +33,13 @@ import logging as log
 import paho.mqtt.client as mqtt
 from argparse import ArgumentParser
 from inference import Network
+
 HOSTNAME = socket.gethostname()
 IPADDRESS = socket.gethostbyname(HOSTNAME)
 MQTT_HOST = IPADDRESS
 MQTT_PORT = 3001
 MQTT_KEEPALIVE_INTERVAL = 60
+INFERENCE_TOLERANCE_FRAMES = 30
 
 
 def build_argparser():
@@ -159,11 +161,11 @@ def infer_on_stream(args, mqtt_client):
             ### current_count, total_count and duration to the MQTT server ###
             ### Topic "person": keys of "count" and "total" ###
             ### Topic "person/duration": key of "duration" ###
-            if(people_in_frame >= 1 and frames_without_people > 30):
+            if(people_in_frame >= 1 and frames_without_people > INFERENCE_TOLERANCE_FRAMES):
                 total_people_count += 1
                 frames_without_people = 0
                 input_time = time.time()
-            elif (people_in_frame == 0 and frames_without_people == 30 and input_time != None):
+            elif (people_in_frame == 0 and frames_without_people == INFERENCE_TOLERANCE_FRAMES and input_time != None):
                 person_duration = json.dumps({'duration': time.time()-input_time })
                 mqtt_client.publish("person/duration",
                                     payload=person_duration, qos=0, retain=False)
