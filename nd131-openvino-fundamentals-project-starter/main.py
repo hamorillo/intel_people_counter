@@ -21,6 +21,7 @@
 
 
 # MQTT server environment variables
+
 import os
 import sys
 import time
@@ -33,7 +34,6 @@ import logging as log
 import paho.mqtt.client as mqtt
 from argparse import ArgumentParser
 from inference import Network
-
 HOSTNAME = socket.gethostname()
 IPADDRESS = socket.gethostbyname(HOSTNAME)
 MQTT_HOST = IPADDRESS
@@ -94,6 +94,19 @@ def draw_boxes(frame, result, args, width, height):
     return frame, people_in_frame
 
 
+def is_image(path):
+    '''
+    Try to read the input file with the imread, if they return something difference from None,
+    it means it is an image.
+    '''
+    image = cv2.imread(path)
+    return image is not None
+
+
+def output_image_path(path):
+    return os.path.splitext(path)[0] + '_output' + os.path.splitext(path)[1]
+
+
 def infer_on_stream(args, mqtt_client):
     """
     Initialize the inference network, stream video to network,
@@ -111,6 +124,8 @@ def infer_on_stream(args, mqtt_client):
     ### TODO: Load the model through `infer_network` ###
     infer_network.load_model(args.model, args.device, args.cpu_extension)
 
+    single_image_mode = is_image(args.input)
+
     ### TODO: Handle the input stream ###
     cap = cv2.VideoCapture(args.input)
     cap.open(args.input)
@@ -122,7 +137,7 @@ def infer_on_stream(args, mqtt_client):
     # Create a video writer for the output video
     # The second argument should be `cv2.VideoWriter_fourcc('M','J','P','G')`
     # on Mac, and `0x00000021` on Linux
-    # out = cv2.VideoWriter('out.mp4', cv2.VideoWriter_fourcc('H','2','6','4'), 30, (width,height))
+    # out = cv2.VideoWriter('output.mp4', cv2.VideoWriter_fourcc('H','2','6','4'), 30, (width,height))
 
     total_people_count = 0
     frames_without_people = 5
@@ -166,7 +181,8 @@ def infer_on_stream(args, mqtt_client):
                 frames_without_people = 0
                 input_time = time.time()
             elif (people_in_frame == 0 and frames_without_people == INFERENCE_TOLERANCE_FRAMES and input_time != None):
-                person_duration = json.dumps({'duration': time.time()-input_time })
+                person_duration = json.dumps(
+                    {'duration': time.time()-input_time})
                 mqtt_client.publish("person/duration",
                                     payload=person_duration, qos=0, retain=False)
                 frames_without_people += 1
@@ -178,11 +194,13 @@ def infer_on_stream(args, mqtt_client):
 
             mqtt_client.publish("person", payload=person, qos=0, retain=False)
 
-        ### TODO: Send the frame to the FFMPEG server ###
-        sys.stdout.buffer.write(frame)
-        sys.stdout.flush()
-
         ### TODO: Write an output image if `single_image_mode` ###
+        if(single_image_mode):
+            cv2.imwrite(output_image_path(args.input), frame)
+        else:
+            ### TODO: Send the frame to the FFMPEG server ###
+            sys.stdout.buffer.write(frame)
+            sys.stdout.flush()
 
 
 def main():
