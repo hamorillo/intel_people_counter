@@ -15,9 +15,14 @@ Model Optimizer Command:
 `python3 /opt/intel/openvino/deployment_tools/model_optimizer/mo_tf.py --input_model frozen_inference_graph.pb --reverse_input_channels --tensorflow_object_detection_api_pipeline_config pipeline.config --tensorflow_use_custom_operations_config /opt/intel/openvino/deployment_tools/model_optimizer/extensions/front/tf/ssd_v2_support.json` 
 
 - [ ] Load the Model Intermediate Representation into the Inference Engine
+>In `inference.py`, a person detection model is loaded using the Inference Engine.
+
 - [ ] Check for Custom Layers
+>`inference.py` includes code that will notify the user that certain layers are not supported (if applicable), and allows for the use of a CPU extension in this case.
 - [ ] Handle Inference Requests Asynchronously
+>Requests for inference are handled asynchronously through the Inference Engine.
 - [ ] Return Appropriate Results
+>The output of the network is appropriately returned through get_output().
 
 ## Processing Video
 
