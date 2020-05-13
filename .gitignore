@@ -1,5 +1,6 @@
 ### Project outputs ###
 *output*
+*logs/*
 
 ### Big Files ###
 *IR/VGG_coco_SSD_512x512_iter_360000/*

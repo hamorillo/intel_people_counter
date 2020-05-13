@@ -22,6 +22,7 @@
 
 # MQTT server environment variables
 
+
 import os
 import sys
 import time
@@ -34,6 +35,7 @@ import logging as log
 import paho.mqtt.client as mqtt
 from argparse import ArgumentParser
 from inference import Network
+
 HOSTNAME = socket.gethostname()
 IPADDRESS = socket.gethostbyname(HOSTNAME)
 MQTT_HOST = IPADDRESS
@@ -41,6 +43,8 @@ MQTT_PORT = 3001
 MQTT_KEEPALIVE_INTERVAL = 60
 INFERENCE_TOLERANCE_FRAMES = 30
 
+def init_logger():
+    log.basicConfig(level=log.DEBUG, format='%(asctime)s %(message)s', filename='logs/' + time.asctime(time.localtime()) + '.log')    
 
 def build_argparser():
     """
@@ -209,6 +213,8 @@ def main():
 
     :return: None
     """
+    init_logger()
+
     # Grab command line args
     args = build_argparser().parse_args()
     # Connect to the MQTT server
