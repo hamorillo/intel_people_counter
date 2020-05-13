@@ -1,6 +1,9 @@
 ### Project outputs ###
 *output*
 
+### Big Files ###
+*IR/VGG_coco_SSD_512x512_iter_360000/*
+
 ### Code ###
 .vscode/*
 .vscode/settings.json

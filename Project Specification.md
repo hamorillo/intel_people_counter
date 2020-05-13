@@ -14,6 +14,10 @@ Repo: http://download.tensorflow.org/models/object_detection/ssd_mobilenet_v2_co
 Model Optimizer Command:
 `python3 /opt/intel/openvino/deployment_tools/model_optimizer/mo_tf.py --input_model frozen_inference_graph.pb --reverse_input_channels --tensorflow_object_detection_api_pipeline_config pipeline.config --tensorflow_use_custom_operations_config /opt/intel/openvino/deployment_tools/model_optimizer/extensions/front/tf/ssd_v2_support.json` 
 
+Repo (COCO SSD512*): https://github.com/weiliu89/caffe/tree/ssd#models
+Model Optimizer Command:
+ `python /opt/intel/openvino/deployment_tools/model_optimizer/mo.py --input_model models/VGGNet/coco/SSD_512x512/VGG_coco_SSD_512x512_iter_360000.caffemodel --input_proto /Users/hector/Downloads/intel/models/VGGNet/coco/SSD_512x512/deploy.prototxt`
+
 - [ ] Load the Model Intermediate Representation into the Inference Engine
 >In `inference.py`, a person detection model is loaded using the Inference Engine.
 
