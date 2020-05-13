@@ -32,6 +32,7 @@ import cv2
 import random
 import numpy as np
 import logging as log
+import logging.handlers
 import paho.mqtt.client as mqtt
 from argparse import ArgumentParser
 from inference import Network
@@ -43,8 +44,12 @@ MQTT_PORT = 3001
 MQTT_KEEPALIVE_INTERVAL = 60
 INFERENCE_TOLERANCE_FRAMES = 30
 
-def init_logger():
-    log.basicConfig(level=log.DEBUG, format='%(asctime)s %(message)s', filename='logs/' + time.asctime(time.localtime()) + '.log')    
+def init_logger():    
+    log.getLogger().setLevel(log.NOTSET)
+    handler = logging.FileHandler('logs/' + time.asctime(time.localtime()) + '.log')
+    handler.setFormatter(log.Formatter('%(asctime)s - %(levelname)s: %(message)s'))
+    handler.setLevel(level = log.DEBUG)
+    log.getLogger().addHandler(handler)
 
 def build_argparser():
     """
