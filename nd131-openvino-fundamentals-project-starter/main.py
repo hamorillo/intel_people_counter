@@ -36,7 +36,6 @@ import logging.handlers
 import paho.mqtt.client as mqtt
 from argparse import ArgumentParser
 from inference import Network
-
 HOSTNAME = socket.gethostname()
 IPADDRESS = socket.gethostbyname(HOSTNAME)
 MQTT_HOST = IPADDRESS
@@ -44,12 +43,15 @@ MQTT_PORT = 3001
 MQTT_KEEPALIVE_INTERVAL = 60
 INFERENCE_TOLERANCE_FRAMES = 30
 
-def init_logger():    
+
+def init_logger(file_path):
     log.getLogger().setLevel(log.NOTSET)
-    handler = logging.FileHandler('logs/' + time.asctime(time.localtime()) + '.log')
-    handler.setFormatter(log.Formatter('%(asctime)s - %(levelname)s: %(message)s'))
-    handler.setLevel(level = log.DEBUG)
+    handler = logging.FileHandler(file_path)
+    handler.setFormatter(log.Formatter(
+        '%(asctime)s - %(levelname)s: %(message)s'))
+    handler.setLevel(level=log.DEBUG)
     log.getLogger().addHandler(handler)
+
 
 def build_argparser():
     """
@@ -75,6 +77,9 @@ def build_argparser():
     parser.add_argument("-pt", "--prob_threshold", type=float, default=0.5,
                         help="Probability threshold for detections filtering"
                         "(0.5 by default)")
+    parser.add_argument("-lf", "--log_file", type=str, default='logs/' + time.asctime(time.localtime()) + '.log',
+                        help="Specify the log file to use. For default each execution"
+                        "will generate a new log file.")
     return parser
 
 
@@ -217,13 +222,13 @@ def main():
     Load the network and parse the output.
 
     :return: None
-    """
-    init_logger()
-
+    """    
     # Grab command line args
     args = build_argparser().parse_args()
+    # Init logger
+    init_logger(args.log_file)
     # Connect to the MQTT server
-    mqtt_client = connect_mqtt()
+    mqtt_client = connect_mqtt()    
     # Perform inference on the input stream
     infer_on_stream(args, mqtt_client)
 
