@@ -17,6 +17,10 @@ Model Optimizer Command:
 Repo (COCO SSD512* - Caffe): https://github.com/weiliu89/caffe/tree/ssd#models
 Model Optimizer Command:
  `python /opt/intel/openvino/deployment_tools/model_optimizer/mo.py --input_model models/VGGNet/coco/SSD_512x512/VGG_coco_SSD_512x512_iter_360000.caffemodel --input_proto /Users/hector/Downloads/intel/models/VGGNet/coco/SSD_512x512/deploy.prototxt`
+ 
+Repo (COCO SSD300* - Caffe): https://github.com/weiliu89/caffe/tree/ssd#models
+Model Optimizer Command:
+ `python /opt/intel/openvino/deployment_tools/model_optimizer/mo.py --input_model models/VGGNet/coco/SSD_300x300/VGG_coco_SSD_300x300_iter_400000.caffemodel --input_proto /Users/hector/Downloads/intel/models/VGGNet/coco/SSD_300x300/deploy.prototxt`
 
 Repo (VOC SSD300* - Caffe): https://github.com/weiliu89/caffe/tree/ssd#models
 Model Optimizer Command:
