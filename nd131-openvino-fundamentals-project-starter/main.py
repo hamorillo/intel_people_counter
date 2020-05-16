@@ -42,6 +42,8 @@ MQTT_HOST = IPADDRESS
 MQTT_PORT = 3001
 MQTT_KEEPALIVE_INTERVAL = 60
 INFERENCE_TOLERANCE_FRAMES = 30
+IMAGE_SET_COCO = "COCO"
+IMAGE_SET_PASCAL_VOC = "PASCAL_VOC"
 
 
 def init_logger(file_path):
@@ -83,7 +85,10 @@ def build_argparser():
     parser.add_argument("-tf", "--tolerance_frames", type=int, default=INFERENCE_TOLERANCE_FRAMES,
                         help="Specify the number of frames that we use as tolerance for errors."
                         "This values is used for detect when a person goes out of the frame.")
-    
+    parser.add_argument("-is", "--image_set", type=str, default=IMAGE_SET_COCO,
+                        help="Specify the image set used, we will use this to determinate what"
+                        "value indentify a person in the output. Ex: COCO = 1, PASCAL_VOC = 15")
+
     return parser
 
 
@@ -95,6 +100,15 @@ def connect_mqtt():
     return mqttc
 
 
+def is_person_detected(args, value_detected):
+    if args.image_set == IMAGE_SET_COCO:
+        return value_detected == 1
+    elif args.image_set == IMAGE_SET_PASCAL_VOC:
+        return value_detected == 15
+    else:
+        return None
+
+
 def draw_boxes(frame, result, args, width, height):
     '''
     Draw bounding boxes onto the frame.
@@ -102,7 +116,7 @@ def draw_boxes(frame, result, args, width, height):
     people_in_frame = 0
     for box in result[0][0]:  # Output shape is 1x1x100x7
         conf = box[2]
-        if box[1] == 1 and conf >= args.prob_threshold:
+        if is_person_detected(args, box[1]) and conf >= args.prob_threshold:
             people_in_frame += 1
             xmin = int(box[3] * width)
             ymin = int(box[4] * height)
@@ -226,13 +240,13 @@ def main():
     Load the network and parse the output.
 
     :return: None
-    """    
+    """
     # Grab command line args
     args = build_argparser().parse_args()
     # Init logger
     init_logger(args.log_file)
     # Connect to the MQTT server
-    mqtt_client = connect_mqtt()    
+    mqtt_client = connect_mqtt()
     # Perform inference on the input stream
     infer_on_stream(args, mqtt_client)
 
