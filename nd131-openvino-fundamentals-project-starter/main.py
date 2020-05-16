@@ -80,6 +80,10 @@ def build_argparser():
     parser.add_argument("-lf", "--log_file", type=str, default='logs/' + time.asctime(time.localtime()) + '.log',
                         help="Specify the log file to use. For default each execution"
                         "will generate a new log file.")
+    parser.add_argument("-tf", "--tolerance_frames", type=int, default=INFERENCE_TOLERANCE_FRAMES,
+                        help="Specify the number of frames that we use as tolerance for errors."
+                        "This values is used for detect when a person goes out of the frame.")
+    
     return parser
 
 
@@ -190,11 +194,11 @@ def infer_on_stream(args, mqtt_client):
             ### current_count, total_count and duration to the MQTT server ###
             ### Topic "person": keys of "count" and "total" ###
             ### Topic "person/duration": key of "duration" ###
-            if(people_in_frame >= 1 and frames_without_people > INFERENCE_TOLERANCE_FRAMES):
+            if(people_in_frame >= 1 and frames_without_people > args.tolerance_frames):
                 total_people_count += 1
                 frames_without_people = 0
                 input_time = time.time()
-            elif (people_in_frame == 0 and frames_without_people == INFERENCE_TOLERANCE_FRAMES and input_time != None):
+            elif (people_in_frame == 0 and frames_without_people == args.tolerance_frames and input_time != None):
                 person_duration = json.dumps(
                     {'duration': time.time()-input_time})
                 mqtt_client.publish("person/duration",
