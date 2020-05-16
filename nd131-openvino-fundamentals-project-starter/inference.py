@@ -42,36 +42,45 @@ class Network:
         self.output_blob = None
 
     def load_model(self, model, device="CPU", cpu_extension=None):
-        
+
         model_xml = model
         model_bin = os.path.splitext(model_xml)[0] + ".bin"
 
         # Inference Engine initialization
-        self.plugin = IECore()        
-
-        ### TODO: Check for supported layers ###
-                
-        # Add extension if it has been especified and we are executing in that device
-        if cpu_extension and "CPU" in device:
-            self.plugin.add_extension(cpu_extension, device)
+        self.plugin = IECore()
 
         # Read the IR as a IENetwork
         self.network = IENetwork(model=model_xml, weights=model_bin)
 
+        ### TODO: Check for supported layers ###
+        supported_layers = self.plugin.query_network(
+            network=self.network, device_name="CPU")
+
+        unsupported_layers = [
+            l for l in self.network.layers.keys() if l not in supported_layers]
+        if len(unsupported_layers) != 0:
+            print("Unsupported layers found: {}".format(unsupported_layers))
+            print("Check whether extensions are available to add to IECore.")
+            exit(1)
+
+        # Add extension if it has been especified and we are executing in that device
+        if cpu_extension and "CPU" in device:
+            self.plugin.add_extension(cpu_extension, device)
+
         # Load the IENetwork (model) into the plugin
         self.exec_network = self.plugin.load_network(self.network, device)
-        
+
         # Get the input layer
         self.input_blob = next(iter(self.network.inputs))
         self.output_blob = next(iter(self.network.outputs))
 
-        ### TODO: Return the loaded inference plugin ###        
+        ### TODO: Return the loaded inference plugin ###
         return self.plugin
 
     def get_input_shape(self):
         ### TODO: Return the shape of the input layer ###
         return self.network.inputs[self.input_blob].shape
-        
+
     def get_output_shape(self):
         return self.network.outputs[self.output_blob].shape
 
@@ -79,8 +88,9 @@ class Network:
         ### TODO: Start an asynchronous request ###
         ### TODO: Return any necessary information ###
         ### Note: You may need to update the function parameters. ###
-        self.infer_request = self.exec_network.start_async(request_id=0, inputs={self.input_blob: image})
-        return 
+        self.infer_request = self.exec_network.start_async(
+            request_id=0, inputs={self.input_blob: image})
+        return
 
     def wait(self):
         ### TODO: Wait for the request to be complete. ###
@@ -90,6 +100,11 @@ class Network:
         return status
 
     def get_output(self):
-        ### TODO: Extract and return the output results
+        # TODO: Extract and return the output results
         ### Note: You may need to update the function parameters. ###
+        time_infering = 0
+        for key, value in self.infer_request.get_perf_counts().items():
+            time_infering += value['real_time']
+
+        log.debug('Time infering:' + str(self.infer_request.latency) + ' ms')
         return self.infer_request.outputs[self.output_blob]
