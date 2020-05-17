@@ -23,5 +23,6 @@ export const MQTT = {
   TOPICS: {
     PERSON: "person", // how many people did we see
     DURATION: "person/duration", // how long were they on frame
+    INFERENCE: "inference", // how long were they on frame
   },
 };

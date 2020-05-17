@@ -15,6 +15,7 @@ class Stats extends React.Component {
     this.handleMqtt = this.handleMqtt.bind( this );
     this.calculatePeople = this.calculatePeople.bind( this );
     this.calculateDuration = this.calculateDuration.bind( this );
+    this.calculateInference = this.calculateInference.bind( this );
     this.state = {
       currentCount: 0,
       currentFrameData: [],
@@ -23,6 +24,7 @@ class Stats extends React.Component {
       currentDurationAvg: "0:00",
       currentDurationData: [],
       currentDurationLabels: [],
+      inferenceTime:0,
     };
   }
 
@@ -43,9 +45,17 @@ class Stats extends React.Component {
       case MQTT.TOPICS.DURATION:
         this.calculateDuration( payload );
         break;
+      case MQTT.TOPICS.INFERENCE:
+        this.calculateInference( payload );
       default:
         break;
     }
+  }
+
+  calculateInference( input ){
+    this.setState({
+        inferenceTime: Math.round(input.time)
+      })
   }
 
   calculatePeople( input ) {
@@ -173,11 +183,12 @@ class Stats extends React.Component {
 
     return (
       <div className={ `stats ${ this.props.statsOn ? "active" : "" }` }>
-        { /* Current count */ }
+        { /* Current count */ }        
         <DataBox title="People in frame" data={ this.state.currentCount } />
         <GraphPane graphId="chart1" graphData={ currentCount } graphOptions={ graphOptions } />
         { /* Duration */ }
         <DataBox title="average duration" data={ this.state.currentDurationAvg } color="blue" />
+        <DataBox title="Inference Time" data={ this.state.inferenceTime + " ms" } />
         <GraphPane graphId="chart2" graphData={ duration } graphOptions={ graphOptions } />
         <div className={ `total-count-toggle ${ this.props.totalCountOn ? "hide-toggle" : "" }` }>
           <button onClick={ this.props.toggleTotalCount }><FontAwesome name="toggle-left" size="3x" /></button>

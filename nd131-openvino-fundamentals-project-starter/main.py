@@ -205,7 +205,7 @@ def infer_on_stream(args, mqtt_client):
         if (infer_network.wait() == 0):
             ### TODO: Get the results of the inference request ###
             # Output Shape -> [1, 1, 100, 7] #
-            result = infer_network.get_output()
+            result, infer_time = infer_network.get_output()
 
             ### TODO: Extract any desired stats from the results ###
             frame, people_in_frame = draw_boxes(
@@ -234,6 +234,9 @@ def infer_on_stream(args, mqtt_client):
                 {'count': people_in_frame, 'total': total_people_count})
 
             mqtt_client.publish("person", payload=person, qos=0, retain=False)
+
+            inference = json.dumps({'time': infer_time})            
+            mqtt_client.publish("inference", payload=inference, qos=0, retain=False)
 
         ### TODO: Write an output image if `single_image_mode` ###
         if(single_image_mode):

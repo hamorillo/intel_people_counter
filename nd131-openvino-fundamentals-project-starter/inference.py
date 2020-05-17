@@ -107,4 +107,4 @@ class Network:
             time_infering += value['real_time']
 
         log.debug('Time infering:' + str(self.infer_request.latency) + ' ms')
-        return self.infer_request.outputs[self.output_blob]
+        return self.infer_request.outputs[self.output_blob], self.infer_request.latency
