@@ -41,6 +41,8 @@ IPADDRESS = socket.gethostbyname(HOSTNAME)
 MQTT_HOST = IPADDRESS
 MQTT_PORT = 3001
 MQTT_KEEPALIVE_INTERVAL = 60
+
+INPUT_CAMERA = "CAMERA"
 INFERENCE_TOLERANCE_FRAMES = 30
 IMAGE_SET_COCO = "COCO"
 IMAGE_SET_PASCAL_VOC = "PASCAL_VOC"
@@ -139,6 +141,13 @@ def output_image_path(path):
     return os.path.splitext(path)[0] + '_output' + os.path.splitext(path)[1]
 
 
+def get_input_for_cv2(user_input):
+    if(user_input == INPUT_CAMERA):
+        return 0
+    else:
+        return user_input
+
+
 def infer_on_stream(args, mqtt_client):
     """
     Initialize the inference network, stream video to network,
@@ -159,8 +168,8 @@ def infer_on_stream(args, mqtt_client):
     single_image_mode = is_image(args.input)
 
     ### TODO: Handle the input stream ###
-    cap = cv2.VideoCapture(args.input)
-    cap.open(args.input)
+    cap = cv2.VideoCapture()
+    cap.open(get_input_for_cv2(args.input))
 
     # Grab the shape of the input
     width = int(cap.get(3))
