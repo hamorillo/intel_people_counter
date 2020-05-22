@@ -23,8 +23,9 @@ class Stats extends React.Component {
       durations: [],
       currentDurationAvg: "0:00",
       currentDurationData: [],
-      currentDurationLabels: [],
-      inferenceTime:0,
+      currentDurationLabels: [],      
+      inferenceTimes:[],
+      inferenceTimeAvg: 0,
     };
   }
 
@@ -53,8 +54,15 @@ class Stats extends React.Component {
   }
 
   calculateInference( input ){
-    this.setState({
-        inferenceTime: Math.round(input.time)
+    const newInference = this.state.inferenceTimes;
+    newInference.push(input)
+    const newInferenceAvg = newInference.reduce( ( a, b ) => {
+      return a + b.time;
+    }, 0 ) / newInference.length;
+
+    this.setState({      
+        inferenceTimes: newInference,
+        inferenceTimeAvg: Math.round(newInferenceAvg)
       })
   }
 
@@ -188,7 +196,7 @@ class Stats extends React.Component {
         <GraphPane graphId="chart1" graphData={ currentCount } graphOptions={ graphOptions } />
         { /* Duration */ }
         <DataBox title="average duration" data={ this.state.currentDurationAvg } color="blue" />
-        <DataBox title="Inference Time" data={ this.state.inferenceTime + " ms" } />
+        <DataBox title="Average Inference Time" data={ this.state.inferenceTimeAvg + " ms" } />
         <GraphPane graphId="chart2" graphData={ duration } graphOptions={ graphOptions } />
         <div className={ `total-count-toggle ${ this.props.totalCountOn ? "hide-toggle" : "" }` }>
           <button onClick={ this.props.toggleTotalCount }><FontAwesome name="toggle-left" size="3x" /></button>
