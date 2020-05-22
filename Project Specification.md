@@ -25,6 +25,9 @@ Model Optimizer Command:
 Repo (VOC SSD300* - Caffe): https://github.com/weiliu89/caffe/tree/ssd#models
 Model Optimizer Command:
  `python /opt/intel/openvino/deployment_tools/model_optimizer/mo.py --input_model models/VGGNet/SSD_300x300_ft/VGG_VOC0712Plus_SSD_300x300_ft_iter_160000.caffemodel --input_proto /Users/hector/Downloads/intel/models/VGGNet/SSD_300x300_ft/deploy.prototxt`
+
+Repo (COCO SSD Inception - TensorFlow): http://download.tensorflow.org/models/object_detection/ssd_inception_v2_coco_2018_01_28.tar.gz
+`python3 /opt/intel/openvino/deployment_tools/model_optimizer/mo_tf.py --input_model frozen_inference_graph.pb --reverse_input_channels --tensorflow_object_detection_api_pipeline_config pipeline.config --tensorflow_use_custom_operations_config /opt/intel/openvino/deployment_tools/model_optimizer/extensions/front/tf/ssd_v2_support.json` 
  
 **NOT WORKING** :Repo (SSD-ResNet-50 - MXNet): https://gluon-cv.mxnet.io/model_zoo/detection.html#faster-rcnn
 Model Optimizer Command:
