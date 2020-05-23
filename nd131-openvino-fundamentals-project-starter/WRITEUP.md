@@ -58,9 +58,24 @@ The inference time of the model pre- and post-conversion was...
 
 ## Assess Model Use Cases
 
-Some of the potential use cases of the people counter app are...
+### Marketing Stands / Shop showcases
+A good potential use case could in marketing stands or shop showcases. We could determine how many people stops in front of the marketing action and how much time they spend looking the advertisement. This data could be very useful if we are able to cross data with other information like the gender, the age, the location of the advertisement a any other data depending of what information are we looking for. 
 
-Each of these use cases would be useful because...
+For example we can test several marketing campaigns for one product (like an A/B test) and determinate which is more effectively and between what kind of person (young people, parents, etc). 
+
+Maybe we could go further, and if we are in a fair a we could localize the person who is interested in our product (we can analyze the time they was looking our showcase), we can send some kind of promotion to them in order to encourage them to buy or get more information about the product.
+
+Other possibility in the marketing field, if we are capable of re-identify a person a know how many times they come to see the showcase, we could make some kind of action that they could see to encourage to purchase our product or service.
+
+### Prevention of occupational hazards with heavy machine
+Some times heavy machine is difficult to manage due to their size, they are big machines and is difficult for the drive be sure that if he realize some movement or actions nobody will be at risk. 
+
+If we install cameras on this kind of heavy machines we could react with several actions if we detect the presence of a person. In fact, we could implement difference actions if the person just enter in the action radius of the machine, like an alarm, or block the machine if the spend more than a determinate number of seconds inside the danger zone.
+
+### Improvement traffic lights management
+The management of the traffic lights in a city is to difficult and it contribute to the global warming when we force to stop the traffic if nobody want's to cross the street. 
+
+We could use or pedestrian detector in order to determinate when someone is waiting for crossing the street a use this information to regulate the traffic lights. With this approach, in the hour that there are less pedestrians in the street we avoid to stop the cars if it's not needed.
 
 ## Assess Effects on End User Needs
 
