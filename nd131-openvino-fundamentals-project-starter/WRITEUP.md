@@ -35,9 +35,9 @@ As you could see on the list, I try to use different frameworks, image-sets and 
 |:---:                                             |:---:           |:---:         |
 | TF - SSD Mobilenet v2 COCO (2018_03_29)          | 69,7 mb        | 67,3 mb      |
 | TF - SSD Inception v2 COCO (2018_01_28)          | 102 mb         | 100,1 mb     |
-| CAFFE - COCO SSD512*                             | 144,2 mb       | 144,2 mb     |
-| CAFFE - COCO SSD300*                             | 137,2 mb       | 137,2 mb     |
-| CAFFE - VOC SSD300*                              | 105,2 mb       | 105,1 mb     |
+| CAFFE - COCO SSD512                              | 144,2 mb       | 144,2 mb     |
+| CAFFE - COCO SSD300                              | 137,2 mb       | 137,2 mb     |
+| CAFFE - VOC SSD300                               | 105,2 mb       | 105,1 mb     |
 | TF - SSD Mobilenet v1 FPN COCO (2018_07_03)\*    | **51,3 mb**    | **123,7 mb** |
 | TF - Faster RCNN Resnet101 Kitti (2018_01_28)\*\*| 189,4 mb       | 188,9 mb**   |
 | TF - Faster RCNN Resnet101 COCO (2018_01_28)\*\* | 196,5 mb       | 192,5 mb**   |
@@ -52,7 +52,27 @@ As you could see on the list, I try to use different frameworks, image-sets and 
 
 As we discuss in some of the issues on the knowledge in Udacity, I assume that the accuracy pre- and post-conversion is the same.
 
+I didn't make a deep analysis about the accuracy of the used models, but based on the retrieved outputs (we don't have to take it as serious experiment):
+
+| Model                                            | Subjective Accuracy |
+|:---:                                             |:---:                |
+| TF - SSD Mobilenet v2 COCO (2018_03_29)          | BAD                 |
+| TF - SSD Inception v2 COCO (2018_01_28)          | BAD                 |
+| CAFFE - COCO SSD512                              | GOOD                |
+| CAFFE - COCO SSD300                              | GOOD                |
+| CAFFE - VOC SSD300                               | GOOD                |
+| TF - SSD Mobilenet v1 FPN COCO (2018_07_03)      | VERY BAD            |
+
 ### Inference time
+
+| Model                                            | IE Inference Time | Pre-conversion Time      |
+|:---:                                             |:---:              |:---:                     |
+| TF - SSD Mobilenet v2 COCO (2018_03_29)          | 32 ms             |                          |
+| TF - SSD Inception v2 COCO (2018_01_28)          | 54 ms             |                          |
+| CAFFE - COCO SSD512                              | 733 ms            |                          |
+| CAFFE - COCO SSD300                              | 256 ms            |                          |
+| CAFFE - VOC SSD300                               | 248 ms            |                          |
+| TF - SSD Mobilenet v1 FPN COCO (2018_07_03)      | 477 ms            |                          |
 
 The inference time of the model pre- and post-conversion was...
 
