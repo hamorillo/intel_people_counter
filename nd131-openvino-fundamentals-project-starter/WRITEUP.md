@@ -23,9 +23,36 @@ For example some layer are not supported in CPU's so we should use extensions fo
 My method(s) to compare models before and after conversion to Intermediate Representations
 were...
 
-The difference between model accuracy pre- and post-conversion was...
+In this project I try to select different pre-trained models in order to practice with the Model Optimizer and several machine learning frameworks. Some of the pre-trained models that I try to use gave me successfully results but others I would need more time to achieve better results.
 
-The size of the model pre- and post-conversion was...
+You could find the models list with the link and the model Optimizer command [here](./WRITEUP-models.md)
+
+As you could see on the list, I try to use different frameworks, image-sets and networks.
+
+### Size Comparison
+
+| Model                                            | Original Size  | IR Size      |
+|:---:                                             |:---:           |:---:         |
+| TF - SSD Mobilenet v2 COCO (2018_03_29)          | 69,7 mb        | 67,3 mb      |
+| TF - SSD Inception v2 COCO (2018_01_28)          | 102 mb         | 100,1 mb     |
+| CAFFE - COCO SSD512*                             | 144,2 mb       | 144,2 mb     |
+| CAFFE - COCO SSD300*                             | 137,2 mb       | 137,2 mb     |
+| CAFFE - VOC SSD300*                              | 105,2 mb       | 105,1 mb     |
+| TF - SSD Mobilenet v1 FPN COCO (2018_07_03)\*    | **51,3 mb**    | **123,7 mb** |
+| TF - Faster RCNN Resnet101 Kitti (2018_01_28)\*\*| 189,4 mb       | 188,9 mb**   |
+| TF - Faster RCNN Resnet101 COCO (2018_01_28)\*\* | 196,5 mb       | 192,5 mb**   |
+
+In almost every case I tested the original size is very similar than their Inference Representation after used the Model Optimizer. There is only one striking case the *TF - SSD Mobilenet v1 FPN COCO (2018_07_03)* where the difference between sizes is more than **72 mb**. I don't have a clear explanation for that so I may investigate more.
+
+**\*Note:** I tried to optimize some MXNET / Gluon models but I didn't achieve it. You could see more detail in [used models file](./WRITEUP-models.md).  
+**\*\*Note:** It was successfully converted but I couldn't make real inferences with it
+
+
+### Accuracy 
+
+As we discuss in some of the issues on the knowledge in Udacity, I assume that the accuracy pre- and post-conversion is the same.
+
+### Inference time
 
 The inference time of the model pre- and post-conversion was...
 

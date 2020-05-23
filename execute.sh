@@ -28,6 +28,18 @@ python nd131-openvino-fundamentals-project-starter/main.py -i nd131-openvino-fun
 # With an image as input
 # python nd131-openvino-fundamentals-project-starter/main.py -i nd131-openvino-fundamentals-project-starter/resources/girl.png -m IR/ssd_mobilenet_v1_fpn_shared_box_predictor_640x640_coco14_sync_2018_07_03/frozen_inference_graph.xml -d CPU -pt 0.6 | /Users/hector/Downloads/ffmpeg/ffmpeg -v warning -f rawvideo -pixel_format bgr24 -video_size 768x432 -framerate 24 -i - http://0.0.0.0:3004/fac.ffm
 
+# (NOT WORKING!!!!!!!!) Faster_rcnn_resnet101_kitti_2018_01_28 (NOT WORKING!!!!!!!!)
+# python nd131-openvino-fundamentals-project-starter/main.py -i nd131-openvino-fundamentals-project-starter/resources/Pedestrian_Detect_2_1_1.mp4 -m IR/Faster_rcnn_resnet101_kitti_2018_01_28/frozen_inference_graph.xml -d CPU -pt 0.6 -lf logs/log.log
+#  | /Users/hector/Downloads/ffmpeg/ffmpeg -v warning -f rawvideo -pixel_format bgr24 -video_size 768x432 -framerate 24 -i - http://0.0.0.0:3004/fac.ffm
+# With an image as input
+# python nd131-openvino-fundamentals-project-starter/main.py -i nd131-openvino-fundamentals-project-starter/resources/girl.png -m IR/ssd_mobilenet_v1_fpn_shared_box_predictor_640x640_coco14_sync_2018_07_03/frozen_inference_graph.xml -d CPU -pt 0.6 | /Users/hector/Downloads/ffmpeg/ffmpeg -v warning -f rawvideo -pixel_format bgr24 -video_size 768x432 -framerate 24 -i - http://0.0.0.0:3004/fac.ffm
+
+# (NOT WORKING!!!!!!!!) faster_rcnn_resnet101_coco_2018_01_28 (NOT WORKING!!!!!!!!)
+# python nd131-openvino-fundamentals-project-starter/main.py -i nd131-openvino-fundamentals-project-starter/resources/Pedestrian_Detect_2_1_1.mp4 -m IR/faster_rcnn_resnet101_coco_2018_01_28/frozen_inference_graph.xml -d CPU -pt 0.6 -lf logs/log.log
+#  | /Users/hector/Downloads/ffmpeg/ffmpeg -v warning -f rawvideo -pixel_format bgr24 -video_size 768x432 -framerate 24 -i - http://0.0.0.0:3004/fac.ffm
+# With an image as input
+# python nd131-openvino-fundamentals-project-starter/main.py -i nd131-openvino-fundamentals-project-starter/resources/girl.png -m IR/faster_rcnn_resnet101_coco_2018_01_28/frozen_inference_graph.xml -d CPU -pt 0.6 | /Users/hector/Downloads/ffmpeg/ffmpeg -v warning -f rawvideo -pixel_format bgr24 -video_size 768x432 -framerate 24 -i - http://0.0.0.0:3004/fac.ffm
+
 # VGG VOC SSD 300 With CAMERA
 # python nd131-openvino-fundamentals-project-starter/main.py -i CAMERA -m  IR/VGG_VOC0712Plus_SSD_300x300_ft_iter_160000/VGG_VOC0712Plus_SSD_300x300_ft_iter_160000.xml -d CPU -pt 0.6 -is PASCAL_VOC | /Users/hector/Downloads/ffmpeg/ffmpeg -v warning -f rawvideo -pixel_format bgr24 -video_size 1280x720 -framerate 29 -i - http://0.0.0.0:3004/fac.ffm
 
