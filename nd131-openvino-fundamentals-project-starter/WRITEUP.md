@@ -42,10 +42,10 @@ As you could see on the list, I try to use different frameworks, image-sets and 
 | TF - Faster RCNN Resnet101 Kitti (2018_01_28)\*\*| 189,4 mb       | 188,9 mb**   |
 | TF - Faster RCNN Resnet101 COCO (2018_01_28)\*\* | 196,5 mb       | 192,5 mb**   |
 
-In almost every case I tested the original size is very similar than their Inference Representation after used the Model Optimizer. There is only one striking case the *TF - SSD Mobilenet v1 FPN COCO (2018_07_03)* where the difference between sizes is more than **72 mb**. I don't have a clear explanation for that so I may investigate more.
-
-**\*Note:** I tried to optimize some MXNET / Gluon models but I didn't achieve it. You could see more detail in [used models file](./WRITEUP-models.md).  
+**\*Note:** In almost every case I tested the original size is very similar than their Inference Representation after used the Model Optimizer. There is only one striking case the *TF - SSD Mobilenet v1 FPN COCO (2018_07_03)* where the difference between sizes is more than **72 mb**. I don't have a clear explanation for that so I may investigate more.  
 **\*\*Note:** It was successfully converted but I couldn't make real inferences with it
+
+**Problems:** I tried to optimize some MXNET / Gluon models but I didn't achieve it. You could see more detail in [used models file](./WRITEUP-models.md).  
 
 
 ### Accuracy 
