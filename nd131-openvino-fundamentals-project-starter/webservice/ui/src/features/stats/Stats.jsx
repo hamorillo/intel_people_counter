@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import moment from "moment";
+import Button from "components/button/Button";
 import DataBox from "components/data-box/DataBox";
 import GraphPane from "components/graph-pane/GraphPane";
 import FontAwesome from "react-fontawesome";
@@ -16,6 +17,10 @@ class Stats extends React.Component {
     this.calculatePeople = this.calculatePeople.bind( this );
     this.calculateDuration = this.calculateDuration.bind( this );
     this.calculateInference = this.calculateInference.bind( this );
+    this.initState();
+  }
+
+  initState() {
     this.state = {
       currentCount: 0,
       currentFrameData: [],
@@ -23,8 +28,8 @@ class Stats extends React.Component {
       durations: [],
       currentDurationAvg: "0:00",
       currentDurationData: [],
-      currentDurationLabels: [],      
-      inferenceTimes:[],
+      currentDurationLabels: [],
+      inferenceTimes: [],
       inferenceTimeAvg: 0,
     };
   }
@@ -203,8 +208,12 @@ class Stats extends React.Component {
         </div>
         <div className={ `total-count-container ${ this.props.totalCountOn ? "" : "hide-count" }` }>
           <button className="counter-close" onClick={ this.props.toggleTotalCount }><FontAwesome name="toggle-right" size="2x" /></button>
-          <DataBox title="Total Counted" data={ this.state.durations.length } color="blue" />
-        </div>
+          <DataBox title="Total Counted" data={ this.state.durations.length } color="blue" />                    
+          
+        </div>   
+        <div>
+          <Button label="RESET STATS" click={() => this.initState()}/>
+        </div>     
       </div>
     );
   }

@@ -133,6 +133,9 @@ The UI was modified in the stats apart as you can see in the following image:
 ### Execute script
 I've created a small script `execute.sh` in order to save all the execution command I'd used.
 
+### Reset Stats
+In order to make easy the reset of stats, I add a new button on the stats zone. Just click on the button initialize all the stats.
+
 ## Assess Effects on End User Needs
 
 You could see a detailed test with some modifications over the same image in [images test](./WRITEUP-imagestest.md).  
