@@ -65,16 +65,16 @@ I didn't make a deep analysis about the accuracy of the used models, but based o
 
 ### Inference time
 
+We use the script `tensorflow-executor.py` included in this project. It accepts as input a TensorFlow Model and an video or image input and calculate de average inference time with all frames.
+
 | Model                                            | IE Inference Time | Pre-conversion Time      |
 |:---:                                             |:---:              |:---:                     |
-| TF - SSD Mobilenet v2 COCO (2018_03_29)          | 32 ms             |                          |
-| TF - SSD Inception v2 COCO (2018_01_28)          | 54 ms             |                          |
+| TF - SSD Mobilenet v2 COCO (2018_03_29)          | 32 ms             | 60 ms                    |
+| TF - SSD Inception v2 COCO (2018_01_28)          | 54 ms             | 81 ms                    |
 | CAFFE - COCO SSD512                              | 733 ms            |                          |
 | CAFFE - COCO SSD300                              | 256 ms            |                          |
 | CAFFE - VOC SSD300                               | 248 ms            |                          |
-| TF - SSD Mobilenet v1 FPN COCO (2018_07_03)      | 477 ms            |                          |
-
-The inference time of the model pre- and post-conversion was...
+| TF - SSD Mobilenet v1 FPN COCO (2018_07_03)      | 477 ms            | 603 ms                   |
 
 ## Assess Model Use Cases
 

@@ -58,7 +58,7 @@ Suitable for input channel reversing inputs are 4-dimensional with 3 channels
 All inputs: {'image_tensor': [1, 3, 600, 600], 'image_info': [1, 3]}
 Suitable inputs {'image_tensor': [1, 3, 600, 600]}
 
-I adapted the code to use the input `image_tensor`and reshape the input to (600, 600) but when I try to execute I always get a segmentation faul error like this:
+I notice that the model has two inputs and I adapted the code to use the input `image_tensor`and reshape the input to (600, 600) but when I try to execute I always get a segmentation faul error like this:
 
 >Segmentation fault: 11
 
