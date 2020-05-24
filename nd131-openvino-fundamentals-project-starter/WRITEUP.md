@@ -135,8 +135,7 @@ I've created a small script `execute.sh` in order to save all the execution comm
 
 ## Assess Effects on End User Needs
 
-Lighting, model accuracy, and camera focal length/image size have different effects on a
-deployed edge model. The potential effects of each of these are as follows...
+You could see a detailed test with some modifications over the same image in [images test](./WRITEUP-imagestest.md).  
 
 ## Conclusion
 
