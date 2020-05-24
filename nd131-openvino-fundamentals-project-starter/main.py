@@ -43,7 +43,7 @@ MQTT_PORT = 3001
 MQTT_KEEPALIVE_INTERVAL = 60
 
 INPUT_CAMERA = "CAMERA"
-INFERENCE_TOLERANCE_FRAMES = 30
+INFERENCE_TOLERANCE_FRAMES = 24
 IMAGE_SET_COCO = "COCO"
 IMAGE_SET_PASCAL_VOC = "PASCAL_VOC"
 
@@ -67,7 +67,8 @@ def build_argparser():
     parser.add_argument("-m", "--model", required=True, type=str,
                         help="Path to an xml file with a trained model.")
     parser.add_argument("-i", "--input", required=True, type=str,
-                        help="Path to image or video file")
+                        help="Path to image or video file. If you use the constant \"CAMERA\". Camera"
+                        "input will be used.")
     parser.add_argument("-l", "--cpu_extension", required=False, type=str,
                         default=None,
                         help="MKLDNN (CPU)-targeted custom layers."

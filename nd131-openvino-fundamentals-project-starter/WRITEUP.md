@@ -99,6 +99,34 @@ The management of the traffic lights in a city is to difficult and it contribute
 
 We could use or pedestrian detector in order to determinate when someone is waiting for crossing the street a use this information to regulate the traffic lights. With this approach, in the hour that there are less pedestrians in the street we avoid to stop the cars if it's not needed.
 
+## New Features
+In order the improve the project and make easy some test and play with it I developed some new features. In this section I'm try to explain each one.
+
+### Inputs
+As the project require, I implement the possibility of use three differences inputs:
+- **IMAGE**: User could use the app with just a simple image. With this kind of input the application will generate an output image with the inference.
+- **VIDEO**: If we use a video as input, each frame of the stream will be analyze and send the inference output image and the stats through the MQTT and FFMPEG servers. 
+- **CAMERA**: In order to make more realistic the application as if it is executed at the edge, I implemented the option of use the device camera as input stream. The output is completely the same as in the video option.
+
+Application is capable of determine for itself if the input file is an image or a video, so the user don't need to be worried about that.
+
+### Image Set
+In order to allow several image-set I added a new argument for the application. The `-is / --image_set` argument allow the user specify which image set was used to train the model. With this information the application know how to deal with the inference output to extract if the model identifies a person in the frame.  
+>Specify the image-set used, we will use this to determinate what value indentify a person in the output. Ex: COCO = 1, PASCAL_VOC = 15"
+
+### Log File
+As we use the standard output to share with FFMPEG server the output image, we can't print any other log trace or message because it will corrupt the image stream. For that reason I implement a log output system using `logging`. This allow to print any message that we need for develop purpose.
+
+If the user don't specify the parameter a new file will be created by default. If they prefer to choose the output file they could add the argument `-lf / --log_file`.
+
+### Tolerance frames
+Sometimes the model could fail with their inference and I we don't do anything it will produce several errors in the counter and in the stats. For that reason I add a new control parameter that the user could control with the argument `-tf / --tolerance_frames`.
+
+The app will use this parameter as the minimum value of frames that the inference engine has to not detect the presence of the pedestrian to finally accept that a pedestrian has disappear and increase the counter.
+
+This value will improve the accuracy of the complete solution.
+
+
 ## Assess Effects on End User Needs
 
 Lighting, model accuracy, and camera focal length/image size have different effects on a
