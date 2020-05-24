@@ -71,10 +71,12 @@ We use the script `tensorflow-executor.py` included in this project. It accepts 
 |:---:                                             |:---:              |:---:                     |
 | TF - SSD Mobilenet v2 COCO (2018_03_29)          | 32 ms             | 60 ms                    |
 | TF - SSD Inception v2 COCO (2018_01_28)          | 54 ms             | 81 ms                    |
-| CAFFE - COCO SSD512                              | 733 ms            |                          |
-| CAFFE - COCO SSD300                              | 256 ms            |                          |
-| CAFFE - VOC SSD300                               | 248 ms            |                          |
+| CAFFE - COCO SSD512                              | 733 ms            | -                        |
+| CAFFE - COCO SSD300                              | 256 ms            | -                        |
+| CAFFE - VOC SSD300                               | 248 ms            | -                        |
 | TF - SSD Mobilenet v1 FPN COCO (2018_07_03)      | 477 ms            | 603 ms                   |
+
+For pre-conversion time I only analyze TensorFlow models but we could notice a significant improvement in the inference time. 
 
 ## Assess Model Use Cases
 
