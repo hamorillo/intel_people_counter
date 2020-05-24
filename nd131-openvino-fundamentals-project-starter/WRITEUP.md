@@ -20,9 +20,6 @@ For example some layer are not supported in CPU's so we should use extensions fo
 
 ## Comparing Model Performance
 
-My method(s) to compare models before and after conversion to Intermediate Representations
-were...
-
 In this project I try to select different pre-trained models in order to practice with the Model Optimizer and several machine learning frameworks. Some of the pre-trained models that I try to use gave me successfully results but others I would need more time to achieve better results.
 
 You could find the models list with the link and the model Optimizer command [here](./WRITEUP-models.md)
@@ -50,7 +47,7 @@ As you could see on the list, I try to use different frameworks, image-sets and 
 
 ### Accuracy 
 
-As we discuss in some of the issues on the knowledge in Udacity, I assume that the accuracy pre- and post-conversion is the same.
+As we discuss in some of the issues on the knowledge page in Udacity, I assume that the accuracy pre- and post-conversion is the same.
 
 I didn't make a deep analysis about the accuracy of the used models, but based on the retrieved outputs (we don't have to take it as serious experiment):
 
@@ -126,34 +123,36 @@ The app will use this parameter as the minimum value of frames that the inferenc
 
 This value will improve the accuracy of the complete solution.
 
+### Average inference time
+I modified the UI of the application to show the average inference time. For this purpose I have to send a new topic through MQTT and adapt the UI to receive this value and calculate the average value with all the single values.
+
+The UI was modified in the stats apart as you can see in the following image:
+
+![Average inference time](./resources/writeup/average_inference_time.png)
+
+### Execute script
+I've created a small script `execute.sh` in order to save all the execution command I'd used.
 
 ## Assess Effects on End User Needs
 
 Lighting, model accuracy, and camera focal length/image size have different effects on a
 deployed edge model. The potential effects of each of these are as follows...
 
-## Model Research
+## Conclusion
 
-[This heading is only required if a suitable model was not found after trying out at least three
-different models. However, you may also use this heading to detail how you converted 
-a successful model.]
+After retrieve the previous data about accuracy and average inference time I decided to used the `CAFFE - VOC SSD300` model. This model is a bit slow when I execute it in my CPU but, probably, if we execute it in a GPU or other device more adapted to this kind of task the performance will be much better.  
 
-In investigating potential people counter models, I tried each of the following three models:
+With this model I achieve to get counted just the real value of persons that appears in the video. 
 
-- Model 1: [Name]
-  - [Model Source]
-  - I converted the model to an Intermediate Representation with the following arguments...
-  - The model was insufficient for the app because...
-  - I tried to improve the model for the app by...
-  
-- Model 2: [Name]
-  - [Model Source]
-  - I converted the model to an Intermediate Representation with the following arguments...
-  - The model was insufficient for the app because...
-  - I tried to improve the model for the app by...
+I used a probability threshold of 0.3 with 24 frames of tolerance (1s on the video).  
 
-- Model 3: [Name]
-  - [Model Source]
-  - I converted the model to an Intermediate Representation with the following arguments...
-  - The model was insufficient for the app because...
-  - I tried to improve the model for the app by...
+The command is:  
+`python nd131-openvino-fundamentals-project-starter/main.py -i nd131-openvino-fundamentals-project-starter/resources/Pedestrian_Detect_2_1_1.mp4 -m  IR/VGG_VOC0712Plus_SSD_300x300_ft_iter_160000/VGG_VOC0712Plus_SSD_300x300_ft_iter_160000.xml -d CPU -pt 0.3 -is PASCAL_VOC -tf 24 | ./ffmpeg -v warning -f rawvideo -pixel_format bgr24 -video_size 768x432 -framerate 24 -i - http://0.0.0.0:3004/fac.ffm`
+
+Maybe the probability threshold is too low and one of the possible objective would be to improve the model or find another technique that helps the tolerance frames in order to reduce the frames where the person is not detected.
+
+**Note**:*It's important to take into account that the tolerance frames could produce errors too if difference persons go out and go into the scene to quickly.*
+
+I've played with this values for seeing how they affect to the inference and the results. For example, if I increase the probability threshold to 0.4, I get 7 person counted when the real value is 6. Who makes our system more reliable (less false positives) and not decrease a lot the accuracy of the application.
+
+`
