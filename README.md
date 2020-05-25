@@ -1,0 +1,1 @@
+You could find the WRITE-UP of the project [here](./nd131-openvino-fundamentals-project-starter/WRITEUP.md)

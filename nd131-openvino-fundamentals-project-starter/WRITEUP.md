@@ -156,5 +156,3 @@ Maybe the probability threshold is too low and one of the possible objective wou
 **Note**:*It's important to take into account that the tolerance frames could produce errors too if difference persons go out and go into the scene to quickly.*
 
 I've played with this values for seeing how they affect to the inference and the results. For example, if I increase the probability threshold to 0.4, I get 7 person counted when the real value is 6. Who makes our system more reliable (less false positives) and not decrease a lot the accuracy of the application.
-
-`
